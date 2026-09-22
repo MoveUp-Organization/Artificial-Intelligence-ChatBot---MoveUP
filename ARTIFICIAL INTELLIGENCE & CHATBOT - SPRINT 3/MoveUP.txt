@@ -1,0 +1,152 @@
+MoveUP (SoulUp) Desafio 2 – Utilização de Pontos para Subsídio de Transporte Público
+
+Integrantes: 
+-Andre Luiz Ramos Forastieri | RM572203
+-Eduardo Damasio Guelere | RM569960
+-Isabelle Ferreira Neri Feitoza | RM573507
+-Marina Fernandes Gomes Mesquita | RM571265
+-Milena Silva Conegin | RM568923
+
+“A SoulUp é uma plataforma digital inovadora que propõe transformar interações 
+online em benefícios reais para os usuários e impacto positivo para o planeta. Por meio 
+de seu aplicativo, os usuários participam de atividades como assistir a conteúdos e 
+interagir em comunidades, acumulando pontos que podem ser convertidos em 
+vantagens concretas, como descontos na fatura de energia, selos de impacto 
+socioambiental e experiências sustentáveis. Dessa forma, a SoulUp conecta pessoas, 
+tecnologia e sustentabilidade, reforçando o propósito da Prospera de gerar valor 
+econômico e ambiental de forma integrada.”
+
+A MoveUP, integrada à plataforma SoulUp, tem como objetivo transformar engajamento digital em benefícios reais para a mobilidade urbana sustentável. A solução permitirá que usuários convertam pontos acumulados dentro da plataforma em créditos de transporte público, incentivando:
+
+-Redução da emissão de carbono;
+-Uso consciente de mobilidade urbana;
+-Participação ativa em ações sustentáveis;
+
+A MoveUP tem como principal objetivo conectar as ações realizadas dentro do aplicativo com impactos concretos no mundo físico, incentivando o uso do transporte público e contribuindo diretamente para a redução da emissão de carbono nas cidades. 
+
+A nossa proposta consiste na criação de uma nova aba dentro do aplicativo da SoulUp, funcionando de maneira semelhante a um banco digital ou carteira virtual. Nessa área, o usuário poderá visualizar seu saldo de pontos, acompanhar seu histórico de conversões e transformar seus pontos acumulados em créditos de vale-transporte de forma eficaz, rápida e segura. 
+
+
+-ARTIFICIAL INGELLIGENCE & CHATBOT - ETAPA DATASET(EXPLICAÇÃO DOS DADOS):
+Challenge Sprint 3 – Construção da Base de Dados
+
+
+1. ORIGEM DOS DADOS
+
+A base de dados utilizada no projeto MoveUP foi obtida através de fontes públicas disponibilizadas pelos órgãos responsáveis. O projeto tem como principal fonte a Pesquisa Origem e Destino 2023 do Metrô de São Paulo. A Pesquisa Origem e Destino 2023 contém informações sobre deslocamentos realizados na Região Metropolitana de São Paulo, incluindo dados relacionados aos modos de transporte utilizados, quantidade de viagens, características dos usuários, motivos das viagens, horários e características dos deslocamentos. A base original utilizada possuía 143.038 registros e 147 variáveis.
+
+Além da Pesquisa Origem e Destino 2023, foi utilizada uma segunda fonte de dados para complementar a base: a tabela oficial de tarifas da SPTrans. A tabela de tarifas da SPTrans foi utilizada para associar valores de referência às modalidades de transporte público consideradas no MoveUP. Essa fonte externa foi necessária porque a Pesquisa Origem e Destino não apresenta diretamente o valor da tarifa paga em cada deslocamento.
+
+Fonte principal:
+Pesquisa Origem e Destino 2023 – Metrô de São Paulo.
+https://www.metro.sp.gov.br/pesquisa-od/
+
+Fonte complementar:
+SPTrans – Tarifas vigentes.
+https://www.sptrans.com.br/tarifas
+
+
+2. SIGNIFICADO DOS DADOS
+
+A base original possuía 147 variáveis. Após a análise e seleção das informações relevantes para o problema, foram construídas seis variáveis principais para representar a base do MoveUP:
+
+- tipo_transporte: representa o principal modo de transporte utilizado na viagem. Essa informação foi obtida a partir da variável MODOPRIN da Pesquisa Origem e Destino. Para a base final foram considerados Metrô, Trem e Ônibus municipal.
+
+- quantidade_viagens: representa a quantidade total de viagens realizada pelo registro analisado. Essa informação foi obtida a partir da variável TOT_VIAG.
+
+- frequencia_uso: representa uma classificação da frequência diária de uso do transporte, criada a partir da quantidade de viagens. A classificação utilizada foi:
+  - 1 viagem: Baixa;
+  - 2 ou 3 viagens: Média;
+  - mais de 3 viagens: Alta.
+
+  *Essa variável deve ser interpretada como uma aproximação da frequência diária de uso, e não como uma medida de frequência de uso ao longo de meses ou anos.
+
+- perfil_usuario: representa uma classificação do perfil do usuário construída a partir das variáveis IDADE e RENDA_FA. Foram utilizadas as seguintes categorias:
+  - Jovem: idade inferior a 18 anos;
+  - Idoso: idade igual ou superior a 60 anos;
+  - Baixa renda: renda de até R$ 3.600;
+  - Renda média: renda acima de R$ 3.600 até R$ 10.117,28;
+  - Alta renda: renda acima de R$ 10.117,28.
+
+  *A idade possui prioridade na classificação. Dessa forma, pessoas com menos de 18 anos são classificadas como Jovem e pessoas com 60 anos ou mais como Idoso, independentemente da renda.
+
+- motivo_viagem: representa o motivo principal do deslocamento. Os códigos originais da variável MOTIVO foram transformados em categorias compreensíveis, como Trabalho - Indústria, Trabalho - Comércio, Trabalho - Serviços, Escola/Educação, Compras, Saúde, Recreação/Visitas/Lazer, Procurar emprego, Assuntos pessoais e Refeição.
+
+- periodo: representa o período do dia em que a viagem teve início, utilizando a variável H_SAIDA. A classificação foi:
+  - Madrugada: antes das 6h;
+  - Manhã: das 6h até antes das 12h;
+  - Tarde: das 12h até antes das 18h;
+  - Noite: das 18h em diante.
+
+Além dessas seis variáveis principais, a base final também recebeu informações relacionadas às tarifas:
+
+- categoria_tarifa: categoria utilizada para relacionar o modo de transporte à tarifa correspondente.
+- tarifa_referencia: valor de referência da tarifa em reais.
+- ano_referencia: ano da tarifa utilizada.
+- pontos_necessarios: quantidade de pontos MoveUP correspondente à tarifa, considerando a regra de que 5.000 pontos equivalem a R$ 45,00.
+
+Para a integração tarifária foram consideradas as seguintes referências:
+- Ônibus municipal: R$ 5,30 → 589 pontos;
+- Metrô: R$ 5,40 → 600 pontos;
+- Trem: R$ 5,40 → 600 pontos.
+
+
+3. QUANTIDADE E QUALIDADE DOS DADOS
+
+A base original possuía 143.038 registros e 147 variáveis. Durante o tratamento dos dados foram identificados 30.125 registros sem viagem. Esses registros apresentavam simultaneamente MODOPRIN = 0, N_VIAG = 0, TOT_VIAG = 0 e MOTIVO = 0. Como esses registros não apresentavam informações de deslocamento úteis para o objetivo do projeto, eles foram removidos da base utilizada na análise.
+
+Após esse tratamento, permaneceram 112.913 registros. A base original foi preservada para manter a fonte de dados sem alterações. Também foram realizadas verificações de valores nulos, duplicidades, tipos de dados, quantidade de valores únicos e distribuição das variáveis.
+
+Na análise exploratória foram identificados alguns valores considerados outliers, principalmente nas variáveis de idade, duração, distância e renda. Esses valores não foram automaticamente removidos, pois podem representar comportamentos reais ou diferenças existentes entre os usuários e deslocamentos.
+
+A análise também identificou uma relação positiva importante entre duração e distância da viagem, com correlação de 0,74. Isso indica que deslocamentos maiores tendem a apresentar maior duração. Após a seleção e transformação das variáveis, foi construída a base específica do MoveUP considerando os modos de transporte Metrô, Trem e Ônibus municipal.
+
+A base final exportada para utilização no projeto possui 24.312 registros e 10 colunas, com dados limpos, confiáveis e adequados para o projeto.
+
+
+4. CARACTERÍSTICAS IMPORTANTES
+
+As principais características consideradas importantes para o problema do MoveUP são aquelas relacionadas ao comportamento de utilização do transporte público e ao perfil dos usuários.
+
+As principais features utilizadas na construção da base foram:
+
+- MODOPRIN → tipo de transporte;
+- TOT_VIAG → quantidade de viagens;
+- IDADE → utilizada na construção do perfil do usuário;
+- RENDA_FA → utilizada na construção do perfil do usuário;
+- MOTIVO → motivo da viagem;
+- H_SAIDA → período da viagem.
+
+Essas variáveis foram escolhidas porque apresentam relação direta com a utilização do transporte e permitem representar diferentes aspectos importantes para o funcionamento do MoveUP.
+
+-A variável quantidade_viagens permite representar a quantidade de utilização do transporte.
+-A frequência de uso permite agrupar os usuários de acordo com a quantidade diária de viagens.
+-O perfil do usuário permite considerar características socioeconômicas e etárias.
+-O motivo da viagem permite identificar diferentes necessidades de deslocamento.
+-O período permite identificar o momento do dia em que o transporte é utilizado.
+
+Por fim, as informações de tarifa e pontos foram adicionadas como uma camada de enriquecimento da base, relacionando os meios de transporte aos valores utilizados na lógica de subsídio do MoveUP.
+
+
+5. RÓTULOS (LABELS)
+
+O rótulo (label) definido para uma futura aplicação de aprendizado supervisionado será a variável "pontos_necessarios". Essa variável representa a quantidade de pontos MoveUP necessária para realizar a conversão do valor da tarifa de transporte em pontos, seguindo a regra definida pelo projeto, na qual 5.000 pontos correspondem a R$ 45,00. Dessa forma, o modelo poderá receber como informações de entrada características como o tipo de transporte, a categoria da tarifa e o valor da tarifa de referência e, a partir dessas informações, gerar como resultado a quantidade correspondente de pontos MoveUP.
+
+Exemplo:
+- Ônibus municipal → tarifa de R$ 5,30 → 589 pontos;
+- Metrô → tarifa de R$ 5,40 → 600 pontos;
+- Trem → tarifa de R$ 5,40 → 600 pontos.
+
+
+6. OBJETIVO
+
+O objetivo do MoveUP é desenvolver uma Inteligência Artificial capaz de realizar automaticamente a conversão do valor das tarifas de transporte em pontos MoveUP. A partir das informações referentes ao meio de transporte e ao valor da tarifa, a IA deverá identificar e retornar a quantidade correspondente de pontos que o usuário receberá ou deverá utilizar. Para isso, a base foi organizada de forma coerente para relacionar as variáveis. A lógica utilizada na construção da base considera a regra definida para o projeto, na qual 5.000 pontos MoveUP correspondem a R$ 45,00. Com base nessa relação, foram calculadas as quantidades de pontos necessárias para as tarifas dos meios de transporte considerados na base final.
+
+Exemplo: se a tarifa de um transporte for R$ 5,30, a IA deverá retornar a quantidade correspondente de pontos MoveUP definida pela regra do projeto.
+
+Além da conversão de tarifas em pontos, os dados da Pesquisa Origem e Destino 2023 permitem representar diferentes características dos deslocamentos e dos usuários, como tipo de transporte, quantidade de viagens, frequência de uso, perfil do usuário, motivo da viagem e período do deslocamento. Essas informações tornam a base mais aderente ao contexto do MoveUP e poderão ser utilizadas como informações complementares em futuras aplicações de Inteligência Artificial.
+
+Dessa forma, busca-se automatizar o cálculo dos pontos, tornando o processo de conversão mais rápido, consistente e integrado à aplicação do MoveUP.
+
+
+
